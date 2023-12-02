@@ -32,6 +32,21 @@ public static class MappingDtos
                 }).ToList();
     }
 
+    public static ProdutoDto ConverterProdutoParaDto(this Produto produto)
+    {
+        return new ProdutoDto
+        {
+            Id = produto.Id,
+            Nome = produto.Nome,
+            Descricao = produto.Descricao,
+            Imagem = produto.Imagem,
+            Preco = (decimal)produto.Preco,
+            Quantidade = produto.Quantidade,
+            CategoriaId = produto.Categoria.Id,
+            CategoriaNome = produto.Categoria.Nome
+        };
+    }
+
     public static IEnumerable<CarrinhoItemDto> ConverterCarrinhoItensParaDto(this IEnumerable<CarrinhoItem> carrinhoItens, IEnumerable<Produto> produtos)
     {
         return (from carrinhoItem in carrinhoItens
