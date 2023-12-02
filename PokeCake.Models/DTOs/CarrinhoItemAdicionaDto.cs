@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace PokeCake.Models.DTOs;
-internal class CarrinhoItemAdicionaDto
+public class CarrinhoItemAdicionaDto
 {
     [Required]
     public int CarrinhoId { get; set; }

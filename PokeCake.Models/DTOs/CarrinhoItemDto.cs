@@ -1,5 +1,5 @@
 ﻿namespace PokeCake.Models.DTOs;
-internal class CarrinhoItemDto
+public class CarrinhoItemDto
 {
     public int Id { get; set; }
     public int CarrinhoId { get; set; }
