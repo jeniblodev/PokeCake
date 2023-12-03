@@ -1,0 +1,97 @@
+﻿@page "/CarrinhoCompra"
+
+@if (CarrinhoCompraItens == null && MensagemErro == null)
+{
+    <ExibirSpinner/>
+} else if (MensagemErro != null)
+{
+    <ExibirErro MensagemErro="@MensagemErro"></ExibirErro>
+} else
+{
+    <h3>Carrinho</h3>
+    @if (CarrinhoCompraItens.Count() > 0)
+    {
+        <MudItem>
+        @foreach (var item in CarrinhoCompraItens)
+        {
+            
+                <MudCard>
+                    <MudGrid>
+                        <MudItem>
+                            <MudImage ObjectFit="ObjectFit.Contain" Height="100" Width="100" Src="@item.ProdutoImagem" Alt="Örebro Slott" Elevation="25" Class="rounded-lg" />
+                        </MudItem>
+                        <MudItem>
+                            <MudCardContent>
+                                <MudText Typo="Typo.h5">@item.ProdutoNome</MudText>
+                                <MudText Typo="Typo.body2">@item.ProdutoDescricao</MudText>
+                                <MudText Typo="Typo.body2">@item.Preco.ToString("c")</MudText>
+                            </MudCardContent>
+                            <MudCardActions>
+
+                                <MudButton Variant="Variant.Text" Color="Color.Warning" OnClick="(()=> DeletarCarrinhoItem(item.Id))">Excluir</MudButton>
+
+
+                            </MudCardActions>
+
+                        </MudItem>
+                    </MudGrid>
+                </MudCard>      
+        }
+        </MudItem>
+        <MudItem>
+            <MudCard>
+                <MudCardContent>
+                    <MudText>Carrinho - Resumo</MudText>
+                    <MudText Typo="Typo.body2">Total: </MudText>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton Variant="Variant.Text" Color="Color.Primary">Finalizar Pedido</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+
+    } else
+    {
+        <h3>Seu carrinho está vazio</h3>
+    }
+}
+
+@code {
+    [Inject]
+    public ICarrinhoCompraService? CarrinhoCompraService { get; set; }
+
+    public List<CarrinhoItemDto>? CarrinhoCompraItens { get; set; }
+
+    public string? MensagemErro { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            CarrinhoCompraItens = await CarrinhoCompraService.GetItens(UsuarioLogado.UsuarioId);
+        }
+        catch (Exception ex)
+        {
+
+            MensagemErro = ex.Message;
+        }
+    }
+
+    protected async Task DeletarCarrinhoItem(int id)
+    {
+        var carrinhoItemDto = await CarrinhoCompraService.DeletaItem(id);
+
+        await RemoveCarrinhoItem(id);
+    }
+
+    private CarrinhoItemDto GetCarrinhoItem(int id)
+    {
+        return CarrinhoCompraItens.FirstOrDefault(i => i.Id == id);
+    }
+
+    private async Task RemoveCarrinhoItem(int id)
+    {
+        var carrinhoItemDto = GetCarrinhoItem(id);
+        CarrinhoCompraItens.Remove(carrinhoItemDto);
+    }
+}
