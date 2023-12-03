@@ -21,7 +21,10 @@
                     <MudText Typo="Typo.body2">@Produto.Preco.ToString("c")&nbsp;(@Produto.Quantidade itens em estoque)</MudText>
                 </MudCardContent>
                 <MudCardActions>
-                    <MudButton Variant="Variant.Text" Color="Color.Primary">Adicionar ao carrinho</MudButton>
+                    
+                        <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="ClickAdicionaItem">Adicionar ao carrinho</MudButton>
+
+                    
                 </MudCardActions>
 
             </MudItem>
@@ -32,6 +35,8 @@
 @code {
     [Inject]
     public IProdutoService? ProdutoService { get; set; }
+    [Inject]
+    public ICarrinhoCompraService? CarrinhoCompraService { get; set; }
 
     [Parameter]
     public int Id { get; set; }
@@ -50,4 +55,28 @@
             MensagemErro = ex.Message;
         }
     }
+
+    protected async Task AdicionarAoCarrinho_Click(CarrinhoItemAdicionaDto carrinhoItemAdicionaDto)
+    {
+        try
+        {
+            var carrinhoItemDto = await CarrinhoCompraService.AdicionaItem(carrinhoItemAdicionaDto);
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
+    }
+
+    async Task ClickAdicionaItem()
+    {
+        AdicionarAoCarrinho_Click(new CarrinhoItemAdicionaDto
+            {
+                CarrinhoId = UsuarioLogado.CarrinhoId,
+                ProdutoId = Produto.Id,
+                Quantidade = 1
+            });
+    }
+
 }

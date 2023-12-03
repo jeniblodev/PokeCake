@@ -69,7 +69,7 @@ public class CarrinhoCompraRepository : ICarrinhoCompraRepository
                       }).SingleOrDefaultAsync();
     }
 
-    public async Task<IEnumerable<CarrinhoItem>> GetItems(string usuarioId)
+    public async Task<IEnumerable<CarrinhoItem>> GetItens(string usuarioId)
     {
         return await (from carrinho in _context.Carrinhos
                       join carrinhoItem in _context.CarrinhoItens

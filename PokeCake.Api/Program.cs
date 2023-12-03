@@ -19,6 +19,7 @@ builder.Services.AddDbContext<PokeCakeContext>(options =>
 });
 
 builder.Services.AddScoped<IProdutoRepository, ProdutoRepository>();
+builder.Services.AddScoped<ICarrinhoCompraRepository, CarrinhoCompraRepository>();
 
 var app = builder.Build();
 
