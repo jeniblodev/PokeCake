@@ -5,11 +5,12 @@
             <MudCardMedia Image="@item.Imagem" Height="200" />
             <MudCardContent>
                 <MudText Typo="Typo.h5">@item.Nome</MudText>
-                <MudText Typo="Typo.body2">@item.Descricao</MudText>
             </MudCardContent>
             <MudCardActions>
-                <MudButton Variant="Variant.Text" Color="Color.Primary">@item.Preco.ToString("c")</MudButton>
-                <MudButton Variant="Variant.Text" Color="Color.Primary">Learn More</MudButton>
+                    <MudButton Variant="Variant.Text" Color="Color.Primary">@item.Preco.ToString("c")</MudButton>
+                <a href="/ProdutoDetalhes/@item.Id">
+                    <MudButton Variant="Variant.Text" Color="Color.Primary">Ver detaques</MudButton>
+                </a>
             </MudCardActions>
         </MudCard>
     </MudItem>

@@ -1,0 +1,53 @@
+﻿@page "/ProdutoDetalhes/{Id:int}"
+
+@if (Produto is null && MensagemErro is null)
+{
+    <ExibirSpinner />
+} else if (MensagemErro is not null)
+{
+    <ExibirErro MensagemErro="@MensagemErro"></ExibirErro>
+} else
+{
+    <h3>Detalhes do Produto</h3>
+    <MudCard >
+        <MudGrid>
+            <MudItem>
+                <MudImage ObjectFit="ObjectFit.Contain" Height="300" Width="300" Src="@Produto.Imagem" Alt="Örebro Slott" Elevation="25" Class="rounded-lg" />
+            </MudItem>
+            <MudItem>
+                <MudCardContent>
+                    <MudText Typo="Typo.h5">@Produto.Nome</MudText>
+                    <MudText Typo="Typo.body2">@Produto.Descricao</MudText>
+                    <MudText Typo="Typo.body2">@Produto.Preco.ToString("c")&nbsp;(@Produto.Quantidade itens em estoque)</MudText>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton Variant="Variant.Text" Color="Color.Primary">Adicionar ao carrinho</MudButton>
+                </MudCardActions>
+
+            </MudItem>
+        </MudGrid>
+    </MudCard>
+}
+
+@code {
+    [Inject]
+    public IProdutoService? ProdutoService { get; set; }
+
+    [Parameter]
+    public int Id { get; set; }
+
+    public ProdutoDto? Produto { get; set; }
+    public string? MensagemErro { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            Produto = await ProdutoService.GetProduto(Id);
+        }
+        catch (Exception ex)
+        {
+            MensagemErro = ex.Message;
+        }
+    }
+}
