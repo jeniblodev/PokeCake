@@ -25,10 +25,14 @@
                                 <MudText Typo="Typo.h5">@item.ProdutoNome</MudText>
                                 <MudText Typo="Typo.body2">@item.ProdutoDescricao</MudText>
                                 <MudText Typo="Typo.body2">@item.Preco.ToString("c")</MudText>
+                                <MudNumericField Label="Outlined" Variant="Variant.Outlined" @bind-Value="@item.Quantidade" />
                             </MudCardContent>
                             <MudCardActions>
-
+                                
+                                <MudButton Variant="Variant.Text" Color="Color.Warning" OnClick="(()=> AtualizaQuantidadeCarrinhoClick(item.Id, item.Quantidade))">Atualizar</MudButton>
+                                <br>
                                 <MudButton Variant="Variant.Text" Color="Color.Warning" OnClick="(()=> DeletarCarrinhoItem(item.Id))">Excluir</MudButton>
+                                
 
 
                             </MudCardActions>
@@ -42,7 +46,7 @@
             <MudCard>
                 <MudCardContent>
                     <MudText>Carrinho - Resumo</MudText>
-                    <MudText Typo="Typo.body2">Total: </MudText>
+                    <MudText Typo="Typo.body2">Total: (@QuantidadeTotal itens)&nbsp;<br />@PrecoTotal</MudText>
                 </MudCardContent>
                 <MudCardActions>
                     <MudButton Variant="Variant.Text" Color="Color.Primary">Finalizar Pedido</MudButton>
@@ -63,12 +67,16 @@
     public List<CarrinhoItemDto>? CarrinhoCompraItens { get; set; }
 
     public string? MensagemErro { get; set; }
+    protected string? PrecoTotal { get; set; }
+    protected int QuantidadeTotal { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
             CarrinhoCompraItens = await CarrinhoCompraService.GetItens(UsuarioLogado.UsuarioId);
+
+            CalculaResumoCarrinhoTotal();
         }
         catch (Exception ex)
         {
@@ -82,6 +90,40 @@
         var carrinhoItemDto = await CarrinhoCompraService.DeletaItem(id);
 
         await RemoveCarrinhoItem(id);
+        CalculaResumoCarrinhoTotal();
+    }
+
+    protected async Task AtualizaQuantidadeCarrinhoClick(int id, int quantidade)
+    {
+        try
+        {
+            if (quantidade > 0)
+            {
+                var atualizaItemDto = new CarrinhoItemAtualizaQuantidadeDto
+                    {
+                        CarrinhoItemId = id,
+                        Quantidade = quantidade
+                    };
+                var retornaItemAtualizadoDto = await CarrinhoCompraService.AtualizaQuantidade(atualizaItemDto);
+
+                AtualizaPrecoTotalItem(retornaItemAtualizadoDto);
+                CalculaResumoCarrinhoTotal();
+            } else
+            {
+                var item = CarrinhoCompraItens.FirstOrDefault(i => i.Id == id);
+                if (item is not null)
+                {
+                    item.Quantidade = 1;
+                    item.PrecoTotal = item.Preco;
+
+                }
+            }
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
     }
 
     private CarrinhoItemDto GetCarrinhoItem(int id)
@@ -94,4 +136,31 @@
         var carrinhoItemDto = GetCarrinhoItem(id);
         CarrinhoCompraItens.Remove(carrinhoItemDto);
     }
+
+    private void SetPrecoTotal()
+    {
+        PrecoTotal = CarrinhoCompraItens.Sum(p => p.PrecoTotal).ToString("c");
+    }
+
+    private void SetQuantidadeTotal()
+    {
+        QuantidadeTotal = CarrinhoCompraItens.Sum(p => p.Quantidade);
+    }
+
+    private void CalculaResumoCarrinhoTotal()
+    {
+        SetPrecoTotal();
+        SetQuantidadeTotal();
+    }
+
+    private void AtualizaPrecoTotalItem(CarrinhoItemDto carrinhoItemDto)
+    {
+        var item = GetCarrinhoItem(carrinhoItemDto.Id);
+
+        if (item != null)
+        {
+            item.PrecoTotal = carrinhoItemDto.Preco * carrinhoItemDto.Quantidade;
+        }
+    }
 }
+
