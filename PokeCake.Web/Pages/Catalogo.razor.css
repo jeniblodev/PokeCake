@@ -1,0 +1,24 @@
+﻿body {
+
+}
+
+.titulo {
+    font-family: 'Rubik Bubbles', sans-serif;
+    font-size: 40px;
+    text-align: center;
+    padding: 20px;
+}
+
+.titulo-categoria {
+    font-family: 'Rubik Bubbles', sans-serif;
+    font-size: 25px;
+    padding: 10px;
+    margin-bottom: 15px;
+}
+
+.divisoria {
+    border: 1px solid #ccc;
+    margin: 20px 0;
+    margin-top: 30px;
+    margin-bottom: 25px;
+}

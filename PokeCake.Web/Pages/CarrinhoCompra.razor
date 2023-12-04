@@ -8,7 +8,7 @@
     <ExibirErro MensagemErro="@MensagemErro"></ExibirErro>
 } else
 {
-    <h3>Carrinho</h3>
+    <p class="titulo">Carrinho</p>
     @if (CarrinhoCompraItens.Count() > 0)
     {
         <MudItem>
@@ -18,20 +18,23 @@
                 <MudCard>
                     <MudGrid>
                         <MudItem>
-                            <MudImage ObjectFit="ObjectFit.Contain" Height="100" Width="100" Src="@item.ProdutoImagem" Alt="Örebro Slott" Elevation="25" Class="rounded-lg" />
+                            <MudImage ObjectFit="ObjectFit.Contain" Height="250" Src="@item.ProdutoImagem" Alt="Örebro Slott" Elevation="25" Class="rounded-lg" />
                         </MudItem>
                         <MudItem>
                             <MudCardContent>
-                                <MudText Typo="Typo.h5">@item.ProdutoNome</MudText>
-                                <MudText Typo="Typo.body2">@item.ProdutoDescricao</MudText>
-                                <MudText Typo="Typo.body2">@item.Preco.ToString("c")</MudText>
-                                <MudNumericField Label="Outlined" Variant="Variant.Outlined" @bind-Value="@item.Quantidade" />
+                                <p Class="nome-item">@item.ProdutoNome</p>
+                                <p Class="descricao-item">@item.ProdutoDescricao</p>
+                                <p Class="preco-item">@item.Preco.ToString("c")</p>
+                                
+                            </MudCardContent>
+                            <MudCardContent>
+                                <MudNumericField Label="Quantidade" Variant="Variant.Outlined" @bind-Value="@item.Quantidade" />
                             </MudCardContent>
                             <MudCardActions>
                                 
-                                <MudButton Variant="Variant.Text" Color="Color.Warning" OnClick="(()=> AtualizaQuantidadeCarrinhoClick(item.Id, item.Quantidade))">Atualizar</MudButton>
-                                <br>
-                                <MudButton Variant="Variant.Text" Color="Color.Warning" OnClick="(()=> DeletarCarrinhoItem(item.Id))">Excluir</MudButton>
+                                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="(()=> AtualizaQuantidadeCarrinhoClick(item.Id, item.Quantidade))">Atualizar item</MudButton>
+                               <MudSpacer></MudSpacer>
+                               <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="(()=> DeletarCarrinhoItem(item.Id))">Excluir</MudButton>
                                 
 
 
@@ -45,24 +48,52 @@
         <MudItem>
             <MudCard>
                 <MudCardContent>
-                    <MudText>Carrinho - Resumo</MudText>
-                    <MudText Typo="Typo.body2">Total: (@QuantidadeTotal itens)&nbsp;<br />@PrecoTotal</MudText>
+                    <p class="carrinho-resumo">Carrinho - Resumo</p>
+                    <p class="total">Total de itens: @QuantidadeTotal itens&nbsp;<br />Valor total: @PrecoTotal</p>
                 </MudCardContent>
+            </MudCard>
+            <MudCard>
+                <MudCardContent>
+                    <p class="titulo-comprador" >Dados do pedido </p>
+                    <p class="subtitulo">Para finalizar o pedido preencha suas informações:</p>
+                    <MudForm >
+                        <MudTextField T="string" Label="Nome" />
+                        <MudTextField T="string" Label="Sobrenome" />
+                        <MudTextField T="string" Label="Telefone" />
+
+                        <p class="subtitulo-pagamento">Forma de pagamento</p>
+                        <MudRadioGroup T="string">
+                            <MudRadio Option="@("1")">Cartão de Crédito</MudRadio>
+                            <MudRadio Option="@("2")">Cartão de Débito</MudRadio>
+                            <MudRadio Option="@("3")">Dinheiro/Pix</MudRadio>
+                        </MudRadioGroup>
+                    </MudForm>
+
+                </MudCardContent>
+                <MudSpacer></MudSpacer>
                 <MudCardActions>
-                    <MudButton Variant="Variant.Text" Color="Color.Primary">Finalizar Pedido</MudButton>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true">Confirmar Pedido</MudButton>
                 </MudCardActions>
+
+         
             </MudCard>
         </MudItem>
 
     } else
     {
-        <h3>Seu carrinho está vazio</h3>
+        <p class="carrinho-vazio">Seu carrinho está vazio</p>
     }
 }
 
 @code {
     [Inject]
     public ICarrinhoCompraService? CarrinhoCompraService { get; set; }
+
+    [Inject]
+    public IGerenciaProdutosLocalStorageService GerenciaProdutosLocalStorageService { get; set; }
+
+    [Inject]
+    public IGerenciaCarrinhoItensLocalStorageService GerenciaCarrinhoItensLocalStorageService { get; set; }
 
     public List<CarrinhoItemDto>? CarrinhoCompraItens { get; set; }
 
@@ -74,7 +105,7 @@
     {
         try
         {
-            CarrinhoCompraItens = await CarrinhoCompraService.GetItens(UsuarioLogado.UsuarioId);
+            CarrinhoCompraItens = await GerenciaCarrinhoItensLocalStorageService.GetCollection();
 
             CarrinhoChanged();
         }
@@ -135,6 +166,8 @@
     {
         var carrinhoItemDto = GetCarrinhoItem(id);
         CarrinhoCompraItens.Remove(carrinhoItemDto);
+
+        await GerenciaCarrinhoItensLocalStorageService.SaveCollection(CarrinhoCompraItens);
     }
 
     private void SetPrecoTotal()
@@ -153,7 +186,7 @@
         SetQuantidadeTotal();
     }
 
-    private void AtualizaPrecoTotalItem(CarrinhoItemDto carrinhoItemDto)
+    private async Task AtualizaPrecoTotalItem(CarrinhoItemDto carrinhoItemDto)
     {
         var item = GetCarrinhoItem(carrinhoItemDto.Id);
 
@@ -161,6 +194,8 @@
         {
             item.PrecoTotal = carrinhoItemDto.Preco * carrinhoItemDto.Quantidade;
         }
+
+        await GerenciaCarrinhoItensLocalStorageService.SaveCollection(CarrinhoCompraItens);
     }
 
     private void CarrinhoChanged()

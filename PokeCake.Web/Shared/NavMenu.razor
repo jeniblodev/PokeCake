@@ -1,30 +1,36 @@
 ﻿@implements IDisposable
 @inject ICarrinhoCompraService carrinhoCompraService
 
-<div class="top-row ps-3 navbar navbar-dark">
+<div class="top-row navbar navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="">PokeCake.Web</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+        <div class="div-titulo">
+            <img class="img-logo" src="/logo-png.png" />
+            <a class="navbar-brand" href="">PokeCake</a>
+            <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>  
     </div>
 </div>
 
-<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
+<div class="nav-scrollable" @onclick="ToggleNavMenu">
     <nav class="flex-column">
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
+                <span class="fa-solid fa-house-chimney" aria-hidden="true"></span> Home
             </NavLink>
         </div>
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="produtos">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Produtos
+                <span class="fa-solid fa-cookie-bite" aria-hidden="true"></span> Todos os produtos
             </NavLink>
         </div>
+
+        <ProdutosCategoriaNavMenu/>
+
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="CarrinhoCompra">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> &nbsp;Carrinho(@carrinhoCompraItemContador)
+                <span class="fa-solid fa-cart-shopping" aria-hidden="true"></span> &nbsp;Carrinho(@carrinhoCompraItemContador)
             </NavLink>
         </div>
     </nav>

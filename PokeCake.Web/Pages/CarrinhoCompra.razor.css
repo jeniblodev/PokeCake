@@ -1,0 +1,66 @@
+﻿body {
+}
+
+.titulo {
+    font-family: 'Rubik Bubbles', sans-serif;
+    font-size: 40px;
+    text-align: center;
+    padding: 20px;
+    padding-bottom: 30px;
+}
+
+.carrinho-vazio {
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.nome-item {
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-weight: bold;
+    font-size: 18px;
+    
+}
+
+.descricao-item {
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-size: 15px;
+}
+
+.preco-item {
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-weight: bold;
+    margin-right: 85px;
+}
+
+.carrinho-resumo {
+    font-family: 'Rubik Bubbles', sans-serif;
+    font-size: 30px;
+    margin-top: 40px;
+    margin-bottom: 15px;
+}
+
+.total {
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.titulo-comprador {
+    font-family: 'Rubik Bubbles', sans-serif;
+    font-size: 30px;
+    margin-top: 40px;
+}
+
+.subtitulo {
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.subtitulo-pagamento {
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-weight: bold;
+    font-size: 14px;
+    margin-top: 40px;
+}

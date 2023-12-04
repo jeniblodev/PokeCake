@@ -8,26 +8,26 @@
     <ExibirErro MensagemErro="@MensagemErro"></ExibirErro>
 } else
 {
-    <h3>Detalhes do Produto</h3>
+    <p class="titulo-categoria">Detalhes do Produto</p>
     <MudCard >
         <MudGrid>
             <MudItem>
                 <MudImage ObjectFit="ObjectFit.Contain" Height="300" Width="300" Src="@Produto.Imagem" Alt="Örebro Slott" Elevation="25" Class="rounded-lg" />
             </MudItem>
-            <MudItem>
+            <div class="dados-texto">
                 <MudCardContent>
-                    <MudText Typo="Typo.h5">@Produto.Nome</MudText>
-                    <MudText Typo="Typo.body2">@Produto.Descricao</MudText>
-                    <MudText Typo="Typo.body2">@Produto.Preco.ToString("c")&nbsp;(@Produto.Quantidade itens em estoque)</MudText>
+                    <p Class="nome-item">@Produto.Nome</p>
+                    <p Class="descricao-item">@Produto.Descricao</p>
+                    <p Class="preco-item">@Produto.Preco.ToString("c")&nbsp;(@Produto.Quantidade itens em estoque)</p>
                 </MudCardContent>
                 <MudCardActions>
                     
-                        <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="ClickAdicionaItem">Adicionar ao carrinho</MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ClickAdicionaItem">Adicionar ao carrinho</MudButton>
 
                     
                 </MudCardActions>
 
-            </MudItem>
+            </div>
         </MudGrid>
     </MudCard>
 }
@@ -40,6 +40,14 @@
     [Inject]
     public NavigationManager? NavigationManager { get; set; }
 
+    [Inject]
+    public IGerenciaProdutosLocalStorageService GerenciaProdutosLocalStorageService { get; set; }
+
+    [Inject]
+    public IGerenciaCarrinhoItensLocalStorageService GerenciaCarrinhoItensLocalStorageService { get; set; }
+
+    private List<CarrinhoItemDto>? CarrinhoCompraItens { get; set; }
+
     [Parameter]
     public int Id { get; set; }
 
@@ -50,7 +58,8 @@
     {
         try
         {
-            Produto = await ProdutoService.GetProduto(Id);
+            CarrinhoCompraItens = await GerenciaCarrinhoItensLocalStorageService.GetCollection();
+            Produto = await GetProdutoPorId(Id);
         }
         catch (Exception ex)
         {
@@ -63,6 +72,13 @@
         try
         {
             var carrinhoItemDto = await CarrinhoCompraService.AdicionaItem(carrinhoItemAdicionaDto);
+
+            if (carrinhoItemDto != null) 
+            {
+                CarrinhoCompraItens.Add(carrinhoItemDto);
+                await GerenciaCarrinhoItensLocalStorageService.SaveCollection(CarrinhoCompraItens);
+            }
+
             NavigationManager.NavigateTo("/CarrinhoCompra");
 
         }
@@ -83,4 +99,14 @@
             });
     }
 
+    private async Task<ProdutoDto> GetProdutoPorId(int id)
+    {
+        var produtosDto = await GerenciaProdutosLocalStorageService.GetCollection();
+
+        if (produtosDto != null)
+        {
+            return produtosDto.SingleOrDefault(p => p.Id == id);
+        }
+        return null;
+    }
 }

@@ -1,29 +1,14 @@
-.navbar-toggler {
+﻿.navbar-toggler {
     background-color: rgba(255, 255, 255, 0.1);
-
-}
-
-.img-logo {
-    width: 60px;
-}
-
-.div-titulo {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 72px;
-    font-family: 'Rubik Bubbles', sans-serif;
 }
 
 .top-row {
-    height: 4.5rem;
+    height: 3.5rem;
     background-color: rgba(0,0,0,0.4);
-    padding-inline-start: 0px !important;
 }
 
 .navbar-brand {
-    font-size: 1.5rem;
-    color: #f7f7f7;
+    font-size: 1.1rem;
 }
 
 .oi {
@@ -41,8 +26,6 @@
     justify-content: center;
     padding: 10px;
 }
-
-
 
 span {
     padding-right: 10px;
@@ -73,13 +56,12 @@ span {
             width: 100%
         }
 
-.nav-item ::deep a:hover {
-    background-color: rgba(255,255,255,0.1);
-    color: white;
-    justify-content: center;
-    width: 100%
-
-}
+        .nav-item ::deep a:hover {
+            background-color: rgba(255,255,255,0.1);
+            color: white;
+            justify-content: center;
+            width: 100%
+        }
 
 @media (min-width: 641px) {
     .navbar-toggler {
@@ -90,7 +72,7 @@ span {
         /* Never collapse the sidebar for wide screens */
         display: block;
     }
-    
+
     .nav-scrollable {
         /* Allow sidebar to scroll for tall menus */
         height: calc(100vh - 3.5rem);

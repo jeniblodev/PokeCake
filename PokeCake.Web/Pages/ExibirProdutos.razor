@@ -3,16 +3,18 @@
     <MudItem xs="6" md="3">
         <MudCard MaxWidth="300px" Elevation="0">
             <MudCardMedia Image="@item.Imagem" Height="200" />
-            <MudCardContent>
-                <MudText Typo="Typo.h5">@item.Nome</MudText>
-            </MudCardContent>
+            <div class="card-content">
+                <p Class="nome-item">@item.Nome</p>
+            </div>
+            <p Class="descricao-item">@item.Descricao</p>
             <MudCardActions>
-                    <MudButton Variant="Variant.Text" Color="Color.Primary">@item.Preco.ToString("c")</MudButton>
+                    <p Class="preco-item" Variant="Variant.Text" Color="Color.Primary">@item.Preco.ToString("c")</p>
                 <a href="/ProdutoDetalhes/@item.Id">
-                    <MudButton Variant="Variant.Text" Color="Color.Primary">Ver detaques</MudButton>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary">Detalhes</MudButton>
                 </a>
             </MudCardActions>
         </MudCard>
+        <br>
     </MudItem>
 }
 

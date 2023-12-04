@@ -6,5 +6,6 @@ public interface IProdutoRepository
 {
     Task<IEnumerable<Produto>> GetProdutos();
     Task<Produto> GetProduto(int id);
-    Task<IEnumerable<Produto>> GetProdutoPorCategoria(int id);
+    Task<IEnumerable<Produto>> GetProdutosPorCategoria(int id);
+    Task<IEnumerable<Categoria>> GetCategorias();
 }

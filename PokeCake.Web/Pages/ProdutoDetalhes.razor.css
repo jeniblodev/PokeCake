@@ -1,0 +1,31 @@
+﻿body {
+}
+
+.titulo-categoria {
+    font-family: 'Rubik Bubbles', sans-serif;
+    font-size: 25px;
+    padding: 10px;
+    margin-bottom: 15px;
+}
+
+.dados-texto {
+    margin: auto 0;
+}
+
+.nome-item {
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-weight: bold;
+    font-size: 20px;
+    padding-bottom: 30px;
+}
+
+.descricao-item {
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-size: 15px;
+}
+
+.preco-item {
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-weight: bold;
+    margin-right: 85px;
+}

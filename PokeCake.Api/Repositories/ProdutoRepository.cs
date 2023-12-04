@@ -31,7 +31,7 @@ public class ProdutoRepository: IProdutoRepository
         return produtos;
     }
 
-    public async Task<IEnumerable<Produto>> GetProdutoPorCategoria(int id)
+    public async Task<IEnumerable<Produto>> GetProdutosPorCategoria(int id)
     {
         var produtos = await _context.Produtos
             .Include(p => p.Categoria)
@@ -40,5 +40,9 @@ public class ProdutoRepository: IProdutoRepository
         return produtos;
     }
 
-    
+    public async Task<IEnumerable<Categoria>> GetCategorias()
+    {
+        var categorias = await _context.Categorias.ToListAsync();
+        return categorias;
+    }
 }

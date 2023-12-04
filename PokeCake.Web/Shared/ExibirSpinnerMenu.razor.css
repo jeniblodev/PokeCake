@@ -1,0 +1,12 @@
+﻿
+
+.gif-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+.centered-gif {
+    width: 70px;
+}

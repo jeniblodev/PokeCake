@@ -1,0 +1,71 @@
+﻿@page "/ProdutosPorCategoria/{CategoriaId:int}"
+
+@if (ProdutosDto == null && MensagemErro == null)
+{
+    <ExibirSpinner/>
+} else if (MensagemErro != null)
+{
+    <ExibirErro MensagemErro="@MensagemErro"/>
+} else
+{
+    <p class="titulo-categoria">Produtos - @NomeCategoria</p>
+    @if (ProdutosDto.Count() > 0)
+    {
+        <MudGrid>
+            <ExibirProdutos Produtos="@ProdutosDto"></ExibirProdutos>
+        </MudGrid>
+    }
+}
+
+@code {
+    [Parameter]
+    public int CategoriaId { get; set; }
+
+    [Inject]
+    public IProdutoService? ProdutoService { get; set; }
+    public IEnumerable<ProdutoDto>? ProdutosDto { get; set; }
+
+    [Inject]
+    public IGerenciaProdutosLocalStorageService GerenciaProdutosLocalStorageService { get; set; }
+
+    [Inject]
+    public IGerenciaCarrinhoItensLocalStorageService GerenciaCarrinhoItensLocalStorageService { get; set; }
+
+    public string? NomeCategoria { get; set; }
+    public string? MensagemErro { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        try
+        {
+            ProdutosDto = await ProdutoService.GetProdutosPorCategoria(CategoriaId);
+
+            if (ProdutosDto != null && ProdutosDto.Count() > 0)
+            {
+                var produtoDto = ProdutosDto.FirstOrDefault(p => p.CategoriaId == CategoriaId);
+                if (produtoDto != null)
+                {
+                    NomeCategoria = produtoDto.CategoriaNome;
+                }
+            }
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
+    }
+
+    private async Task<IEnumerable<ProdutoDto>> GetCollectionProdutosPorCategoriaId(int categoriaId)
+    {
+        var produtoCollection = await GerenciaProdutosLocalStorageService.GetCollection();
+
+        if (produtoCollection != null)
+        {
+            return produtoCollection.Where(p => p.CategoriaId == categoriaId);
+        } else
+        {
+            return await ProdutoService.GetProdutosPorCategoria(categoriaId);
+        }
+    }
+}
