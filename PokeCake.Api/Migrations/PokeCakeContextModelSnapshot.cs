@@ -37,7 +37,7 @@ namespace PokeCake.Api.Migrations
                     b.HasIndex("UsuarioId")
                         .IsUnique();
 
-                    b.ToTable("Carrinhos");
+                    b.ToTable("Carrinhos", (string)null);
 
                     b.HasData(
                         new
@@ -80,7 +80,7 @@ namespace PokeCake.Api.Migrations
 
                     b.HasIndex("ProdutoId");
 
-                    b.ToTable("CarrinhoItens");
+                    b.ToTable("CarrinhoItens", (string)null);
                 });
 
             modelBuilder.Entity("PokeCake.Api.Entities.Categoria", b =>
@@ -102,7 +102,7 @@ namespace PokeCake.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categorias");
+                    b.ToTable("Categorias", (string)null);
 
                     b.HasData(
                         new
@@ -161,7 +161,7 @@ namespace PokeCake.Api.Migrations
 
                     b.HasIndex("CategoriaId");
 
-                    b.ToTable("Produtos");
+                    b.ToTable("Produtos", (string)null);
 
                     b.HasData(
                         new
@@ -481,7 +481,7 @@ namespace PokeCake.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Usuarios");
+                    b.ToTable("Usuarios", (string)null);
 
                     b.HasData(
                         new

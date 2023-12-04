@@ -1,4 +1,7 @@
 ﻿@page "/CarrinhoCompra"
+@using System.Text.Json;
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
 
 @if (CarrinhoCompraItens == null && MensagemErro == null)
 {
@@ -8,6 +11,7 @@
     <ExibirErro MensagemErro="@MensagemErro"></ExibirErro>
 } else
 {
+    
     <p class="titulo">Carrinho</p>
     @if (CarrinhoCompraItens.Count() > 0)
     {
@@ -31,8 +35,8 @@
                                 <MudNumericField Label="Quantidade" Variant="Variant.Outlined" @bind-Value="@item.Quantidade" />
                             </MudCardContent>
                             <MudCardActions>
-                                
-                                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="(()=> AtualizaQuantidadeCarrinhoClick(item.Id, item.Quantidade))">Atualizar item</MudButton>
+
+                                <MudButton StartIcon="@Icons.Material.Filled.Refresh" Variant="Variant.Filled" Color="Color.Primary" OnClick="(()=> AtualizaQuantidadeCarrinhoClick(item.Id, item.Quantidade))">Atualizar item</MudButton>
                                <MudSpacer></MudSpacer>
                                <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="(()=> DeletarCarrinhoItem(item.Id))">Excluir</MudButton>
                                 
@@ -57,9 +61,8 @@
                     <p class="titulo-comprador" >Dados do pedido </p>
                     <p class="subtitulo">Para finalizar o pedido preencha suas informações:</p>
                     <MudForm >
-                        <MudTextField T="string" Label="Nome" />
-                        <MudTextField T="string" Label="Sobrenome" />
-                        <MudTextField T="string" Label="Telefone" />
+                        <MudTextField @bind-Value="nomeComprador" T="string" Label="Nome Completo" />
+                        <MudTextField @bind-Value="telefoneComprador" T="string" Label="Telefone" />
 
                         <p class="subtitulo-pagamento">Forma de pagamento</p>
                         <MudRadioGroup T="string">
@@ -71,18 +74,21 @@
 
                 </MudCardContent>
                 <MudSpacer></MudSpacer>
+                <p class="finalizar-pedido">Para finalizar o pedido e ser direcionado para um atendente, clique no botão abaixo</p>
                 <MudCardActions>
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true">Confirmar Pedido</MudButton>
+
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" OnClick="(()=> ConfirmarPedido())">Confirmar Pedido</MudButton>
                 </MudCardActions>
 
          
             </MudCard>
         </MudItem>
-
+        
     } else
     {
         <p class="carrinho-vazio">Seu carrinho está vazio</p>
     }
+    
 }
 
 @code {
@@ -170,7 +176,7 @@
         await GerenciaCarrinhoItensLocalStorageService.SaveCollection(CarrinhoCompraItens);
     }
 
-    private void SetPrecoTotal()
+    private async Task SetPrecoTotal()
     {
         PrecoTotal = CarrinhoCompraItens.Sum(p => p.PrecoTotal).ToString("c");
     }
@@ -203,5 +209,49 @@
         CalculaResumoCarrinhoTotal();
         CarrinhoCompraService.RaiseEventOnCarrinhoCompraChanged(QuantidadeTotal);
     }
+
+    //fluxo de enviar para o whatsapp
+
+    private string nomeComprador;
+    private string telefoneComprador;
+    private string precoTotalPedido;
+    private List<string> ListaProdutosPedido { get; set; } = new List<string>();
+
+    public List<CarrinhoItemDto>? Produtos { get; set; }
+
+
+    private async Task ConfirmarPedido()
+    {
+        Produtos = await GerenciaCarrinhoItensLocalStorageService.GetCollection();
+        string nome = nomeComprador;
+        string telefone = telefoneComprador;
+        string totalPreco = CarrinhoCompraItens.Sum(p => p.PrecoTotal).ToString("c");
+        string produtoPedido = "";
+
+        foreach(var item in Produtos)
+        {
+            produtoPedido = $"Produto: {item.ProdutoNome} - Quantidade: {item.Quantidade} - Preço: {item.Preco}";
+            Console.WriteLine(produtoPedido);
+            ListaProdutosPedido.Add(produtoPedido);
+        }
+
+        var dadosCompra = $"Nome: {nome} - Telefone: {telefone} - Preço final do pedido: {totalPreco}";
+        Console.WriteLine(dadosCompra);
+
+        string mensagem = $"Dado separado: {dadosCompra}{Environment.NewLine}Lista de dados:{Environment.NewLine}{string.Join(Environment.NewLine, ListaProdutosPedido)}";
+        await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", mensagem);
+        Console.WriteLine("Mensagem copiada para a área de transferência.");
+
+        NavigationManager.NavigateTo("https://api.whatsapp.com/send?phone=5532991422169&text=Ol%C3%A1,%20gostaria%20de%20fazer%20o%20pedido:%20(cole%20aqui%20os%20dados%20do%20seu%20pedido%20que%20j%C3%A1%20est%C3%A3o%20copiados%20na%20sua%20%C3%A1rea%20de%20transfer%C3%AAncia)");
+
+        
+    }
+
+    
+
+    
+
+
+    
 }
 

@@ -15,6 +15,8 @@ public class PokeCakeContext : DbContext
     public DbSet<Categoria>? Categorias { get; set; }
     public DbSet<Usuario>? Usuarios { get; set; }
 
+
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         //incluindo categorias no banco
